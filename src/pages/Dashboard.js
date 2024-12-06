@@ -131,8 +131,10 @@ const Dashboard = () => {
       {selectedDevice && selectedBrand && (
         <div className="bg-white p-6 shadow-lg rounded-lg w-full max-w-full min-h-[50vh] flex flex-col justify-center items-center my-8">
           <h2 className="text-xl font-semibold mb-4 text-center">{selectedBrand.name}</h2>
+          <label htmlFor="serviceTag" className="block text-xl font-medium text-black-700">
+              Enter a product {selectedBrand.identifier}:
+            </label>
           <p className="mt-2">
-            Find your {selectedBrand.identifier} on{' '}
             {selectedBrand.supportLink ? (
               <a
                 href={selectedBrand.supportLink}
@@ -140,16 +142,13 @@ const Dashboard = () => {
                 rel="noopener noreferrer"
                 className="text-blue-600 underline"
               >
-                How to find {selectedBrand.identifier}
+                How to find your product identifier
               </a>
             ) : (
               'your product documentation.'
             )}
           </p>
           <div className="mt-4">
-            <label htmlFor="serviceTag" className="block text-sm font-medium text-gray-700">
-              Enter your {selectedBrand.identifier}:
-            </label>
             <input
               type="text"
               id="serviceTag"
