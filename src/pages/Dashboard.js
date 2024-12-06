@@ -19,7 +19,7 @@ const Dashboard = () => {
     { name: 'HP', logo: '/logo/hp-logo.svg', supportLink: 'https://support.hp.com/si-en/document/ish_2039298-1862169-16', identifier: 'Serial Number' },
     { name: 'Lenovo', logo: '/logo/lenovo-logo.svg', supportLink: 'https://support.lenovo.com/us/en/solutions/ht510152-how-to-find-serial-numbers-pc', identifier: 'Serial Number' },
     { name: 'MSI', logo: '/logo/msi-logo.svg', supportLink: 'https://www.msi.com/support/technical-details', identifier: 'Serial Number' },
-    { name: 'Other', logo: '/logo/other-logo.svg', supportLink: null, identifier: 'Serial Number' },
+    { name: 'Other', logo: '', supportLink: null, identifier: 'Serial Number' },
   ];
 
   const [selectedDevice, setSelectedDevice] = useState(null);
@@ -109,13 +109,17 @@ const Dashboard = () => {
             {brands.map((brand) => (
               <div
                 key={brand.name}
-                className="p-8 border rounded-lg shadow-md hover:shadow-lg transition-all cursor-pointer"
+                className="p-8 border rounded-lg shadow-md hover:shadow-lg transition-all cursor-pointer h-[200px] flex flex-col items-center justify-center"
                 onClick={() => handleBrandChange(brand)}
               >
-                <div className="flex flex-col items-center justify-center">
+                {brand.logo ? (
                   <img src={brand.logo} alt={brand.name} className="h-32 w-32 object-contain" />
-                  <div className="mt-2 text-center">{brand.name}</div>
-                </div>
+                ) : (
+                  <div className="flex items-center justify-center text-lg font-medium">
+                    Other
+                  </div>
+                )}
+                {brand.logo && <div className="mt-2 text-center">{brand.name}</div>}
               </div>
             ))}
           </div>
@@ -132,8 +136,8 @@ const Dashboard = () => {
         <div className="bg-white p-6 shadow-lg rounded-lg w-full max-w-full min-h-[50vh] flex flex-col justify-center items-center my-8">
           <h2 className="text-xl font-semibold mb-4 text-center">{selectedBrand.name}</h2>
           <label htmlFor="serviceTag" className="block text-xl font-medium text-black-700">
-              Enter a product {selectedBrand.identifier}:
-            </label>
+            Enter a product {selectedBrand.identifier}:
+          </label>
           <p className="mt-2">
             {selectedBrand.supportLink ? (
               <a
@@ -145,7 +149,7 @@ const Dashboard = () => {
                 How to find your product identifier
               </a>
             ) : (
-              'your product documentation.'
+              ''
             )}
           </p>
           <div className="mt-4">
