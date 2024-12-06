@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useLogin } from '../contexts/LoginContext'; // Import the useLogin hook
 
 const Dashboard = () => {
-  const { isLoggedIn, setIsLoggedIn } = useLogin();
+  const { isLoggedIn } = useLogin();
 
   const devices = [
     { name: 'Laptop', icon: '/logo/laptop.png' },
@@ -13,12 +13,13 @@ const Dashboard = () => {
   ];
 
   const brands = [
-    { name: 'Dell', logo: '/logo/dell-logo.svg', supportLink: 'https://www.dell.com/support/contents/en-us/Category/product-support/self-support-knowledgebase/locate-service-tag/' },
-    { name: 'Asus', logo: '/logo/asus-logo.svg', supportLink: 'https://www.asus.com/us/support/article/566/' },
-    { name: 'Gigabyte', logo: '/logo/gigabyte-logo.svg', supportLink: 'https://www.gigabyte.com/Support/Consumer/Identification/Product-Model-and-Serial-Number/' },
-    { name: 'HP', logo: '/logo/hp-logo.svg', supportLink: 'https://support.hp.com/si-en/document/ish_2039298-1862169-16' },
-    { name: 'Lenovo', logo: '/logo/lenovo-logo.svg', supportLink: 'https://support.lenovo.com/us/en/solutions/ht510152-how-to-find-serial-numbers-pc' },
-    { name: 'MSI', logo: '/logo/msi-logo.svg', supportLink: 'https://www.msi.com/support/technical-details' },
+    { name: 'Dell', logo: '/logo/dell-logo.svg', supportLink: 'https://www.dell.com/support/contents/en-us/Category/product-support/self-support-knowledgebase/locate-service-tag/', identifier: 'Service Tag' },
+    { name: 'Asus', logo: '/logo/asus-logo.svg', supportLink: 'https://www.asus.com/us/support/article/566/', identifier: 'Serial Number' },
+    { name: 'Gigabyte', logo: '/logo/gigabyte-logo.svg', supportLink: 'https://www.gigabyte.com/Support/Consumer/Identification/Product-Model-and-Serial-Number/', identifier: 'Serial Number' },
+    { name: 'HP', logo: '/logo/hp-logo.svg', supportLink: 'https://support.hp.com/si-en/document/ish_2039298-1862169-16', identifier: 'Serial Number' },
+    { name: 'Lenovo', logo: '/logo/lenovo-logo.svg', supportLink: 'https://support.lenovo.com/us/en/solutions/ht510152-how-to-find-serial-numbers-pc', identifier: 'Serial Number' },
+    { name: 'MSI', logo: '/logo/msi-logo.svg', supportLink: 'https://www.msi.com/support/technical-details', identifier: 'Serial Number' },
+    { name: 'Other', logo: '/logo/other-logo.svg', supportLink: null, identifier: 'Serial Number' },
   ];
 
   const [selectedDevice, setSelectedDevice] = useState(null);
@@ -27,8 +28,8 @@ const Dashboard = () => {
 
   const handleDeviceChange = (device) => {
     setSelectedDevice(device);
-    setSelectedBrand(null); // Reset brand selection when a new device is selected
-    setServiceTag(''); // Reset service tag input
+    setSelectedBrand(null);
+    setServiceTag('');
   };
 
   const handleBrandChange = (brand) => {
@@ -81,7 +82,6 @@ const Dashboard = () => {
         </div>
       )}
 
-      {/* Device Selection Section */}
       {!selectedDevice && (
         <div className="bg-white p-6 shadow-lg rounded-lg w-full max-w-full min-h-[50vh] flex flex-col justify-center items-center my-8">
           <h2 className="text-xl font-semibold mb-4 text-center">Select a Device</h2>
@@ -102,7 +102,6 @@ const Dashboard = () => {
         </div>
       )}
 
-      {/* Brand Selection Section */}
       {selectedDevice && !selectedBrand && (
         <div className="bg-white p-6 shadow-lg rounded-lg w-full max-w-full min-h-[50vh] flex flex-col justify-center items-center my-8">
           <h2 className="text-xl font-semibold mb-4 text-center">Select a Brand</h2>
@@ -129,14 +128,27 @@ const Dashboard = () => {
         </div>
       )}
 
-      {/* Service Tag Section */}
       {selectedDevice && selectedBrand && (
         <div className="bg-white p-6 shadow-lg rounded-lg w-full max-w-full min-h-[50vh] flex flex-col justify-center items-center my-8">
           <h2 className="text-xl font-semibold mb-4 text-center">{selectedBrand.name}</h2>
-          <p className="mt-2">Enter a product identifier, model, service request, or describe what you are looking for.</p>
+          <p className="mt-2">
+            Find your {selectedBrand.identifier} on{' '}
+            {selectedBrand.supportLink ? (
+              <a
+                href={selectedBrand.supportLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-600 underline"
+              >
+                How to find {selectedBrand.identifier}
+              </a>
+            ) : (
+              'your product documentation.'
+            )}
+          </p>
           <div className="mt-4">
             <label htmlFor="serviceTag" className="block text-sm font-medium text-gray-700">
-              Enter your service tag:
+              Enter your {selectedBrand.identifier}:
             </label>
             <input
               type="text"
@@ -144,7 +156,7 @@ const Dashboard = () => {
               value={serviceTag}
               onChange={handleServiceTagChange}
               className="mt-2 w-full px-3 py-2 border border-gray-300 rounded-md"
-              placeholder="Service Tag"
+              placeholder={selectedBrand.identifier}
             />
           </div>
           <button
