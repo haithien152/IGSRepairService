@@ -9,18 +9,36 @@ const LoginPage = () => {
   const [errorMessage, setErrorMessage] = useState('');
   const navigate = useNavigate();
 
-  const dummyUsername = 'admin';
-  const dummyPassword = 'admin';
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (username === dummyUsername && password === dummyPassword) {
-      // Store the user info in the context and localStorage
-      login({ username });
-      navigate('/dashboard'); // Redirect to dashboard
-    } else {
-      setErrorMessage('Invalid credentials. Please try again.');
+    try {
+      // Send login request to Flask backend via Ngrok URL
+      const response = await fetch('https://d615-12-11-47-202.ngrok-free.app/login', {  // Use Ngrok URL here
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          username,
+          password,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (data.message === `User ${username} logged in successfully!`) {
+        // Store the user info in context and localStorage
+        login({ username });
+        navigate('/dashboard'); // Redirect to dashboard
+      } else {
+        setErrorMessage(data.message || 'Invalid credentials. Please try again.');
+      }
+
+      console.log(data.message);
+    } catch (error) {
+      console.error('Error logging in:', error);
+      setErrorMessage('An error occurred while logging in. Please try again.');
     }
   };
 
