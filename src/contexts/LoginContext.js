@@ -1,4 +1,3 @@
-// contexts/LoginContext.js
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
 // Create the LoginContext
@@ -8,6 +7,7 @@ const LoginContext = createContext();
 export const LoginProvider = ({ children }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState(null);
+  const [isDropdownVisible, setIsDropdownVisible] = useState(false); // State for dropdown visibility
 
   // Check localStorage for user info on initial load
   useEffect(() => {
@@ -39,7 +39,16 @@ export const LoginProvider = ({ children }) => {
   };
 
   return (
-    <LoginContext.Provider value={{ isLoggedIn, user, login, logout }}>
+    <LoginContext.Provider
+      value={{
+        isLoggedIn,
+        user,
+        login,
+        logout,
+        isDropdownVisible,
+        setIsDropdownVisible,
+      }}
+    >
       {children}
     </LoginContext.Provider>
   );
