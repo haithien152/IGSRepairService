@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect } from "react";
+import { connectSocket, disconnectSocket } from "../components/Socket";
 
 // Create the LoginContext
 const LoginContext = createContext();
@@ -11,31 +12,55 @@ export const LoginProvider = ({ children }) => {
 
   // Check localStorage for user info on initial load
   useEffect(() => {
-    const savedUser = localStorage.getItem('user');
-    const savedLoginStatus = localStorage.getItem('isLoggedIn');
-    
-    if (savedUser && savedLoginStatus === 'true') {
-      setUser(JSON.parse(savedUser)); // Parse and set user info
-      setIsLoggedIn(true); // Set login status to true
+    const savedUserId = localStorage.getItem("user_id");
+    const savedUsername = localStorage.getItem("username");
+    const savedEmail = localStorage.getItem("email");
+    const savedLoginStatus = localStorage.getItem("isLoggedIn");
+
+    if (savedUserId && savedLoginStatus === "true") {
+      const parsedUser = {
+        user_id: savedUserId,
+        username: savedUsername,
+        email: savedEmail,
+      };
+      setUser(parsedUser);
+      setIsLoggedIn(true);
+
+      // Connect the socket with the saved user_id
+      connectSocket(savedUserId);
     }
   }, []);
 
   const login = (userInfo) => {
     setIsLoggedIn(true);
     setUser(userInfo);
-    
-    // Save to localStorage
-    localStorage.setItem('user', JSON.stringify(userInfo));
-    localStorage.setItem('isLoggedIn', 'true');
+
+    // Save individual properties to localStorage
+    localStorage.setItem("user_id", userInfo.user_id);
+    localStorage.setItem("username", userInfo.username);
+    localStorage.setItem("email", userInfo.email);
+    localStorage.setItem("isLoggedIn", "true");
+
+    // Connect the socket with the user_id
+    connectSocket(userInfo.user_id);
   };
 
   const logout = () => {
     setIsLoggedIn(false);
     setUser(null);
-    
-    // Clear from localStorage
-    localStorage.removeItem('user');
-    localStorage.setItem('isLoggedIn', 'false');
+
+    // Clear specific items from localStorage
+    localStorage.removeItem("user_id");
+    localStorage.removeItem("username");
+    localStorage.removeItem("email");
+    localStorage.setItem("isLoggedIn", "false");
+
+    // Disconnect the socket
+    disconnectSocket();
+  };
+
+  const resetDropdown = () => {
+    setIsDropdownVisible(false); // Reset dropdown visibility
   };
 
   return (
@@ -47,6 +72,7 @@ export const LoginProvider = ({ children }) => {
         logout,
         isDropdownVisible,
         setIsDropdownVisible,
+        resetDropdown, // Add the function here
       }}
     >
       {children}

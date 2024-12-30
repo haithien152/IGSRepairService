@@ -1,10 +1,13 @@
 import React, { useEffect, useRef, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { useLogin } from '../contexts/LoginContext';
+import { useNavigate } from 'react-router-dom';
+import { disconnectSocket } from '../components/Socket'; // Import the disconnect function
 
 const Navbar = () => {
   const { isLoggedIn, logout, user, isDropdownVisible, setIsDropdownVisible } = useLogin();
   const dropdownRef = useRef(null);
+  const navigate = useNavigate();
 
   const handleAccountClick = () => {
     setIsDropdownVisible((prevState) => !prevState); // Toggle dropdown
@@ -22,6 +25,14 @@ const Navbar = () => {
       document.removeEventListener('click', handleClickOutside);
     };
   }, [handleClickOutside]);
+
+  const handleLogout = () => {
+    disconnectSocket(); // Disconnect from the server
+    localStorage.clear(); // Clear all local storage
+    logout(); // Log out the user in the application context
+    setIsDropdownVisible(false); // Ensure dropdown is closed on logout
+    navigate('/'); // Redirect to home page
+  };
 
   return (
     <nav className="bg-white-600 text-blue-800 h-16 flex items-center border-b border-gray-300">
@@ -60,10 +71,7 @@ const Navbar = () => {
                   <div className="absolute right-0 mt-2 p-2 bg-white text-black shadow-lg border border-gray-200">
                     <p className="px-4 py-2">{`Welcome, ${user?.username || 'User'}`}</p>
                     <button
-                      onClick={() => {
-                        logout();
-                        setIsDropdownVisible(false); // Ensure dropdown is closed on logout
-                      }}
+                      onClick={handleLogout} // Use the new handleLogout function
                       className="block text-red-600 hover:text-red-800 px-4 py-2 w-full text-left"
                     >
                       Logout

@@ -27,7 +27,17 @@ const Homepage = () => {
   };
 
   const toggleShowCategories = () => {
-    setShowCategories((prev) => !prev);
+    if (showCategories) {
+      // Step 1: Hide the section
+      setShowCategories(false);
+  
+      // Step 2: Wait for the transition to complete, then reset the device selection
+      setTimeout(() => {
+        handleGoBackToDevice();
+      }, 500); // Adjust delay to match your CSS transition duration
+    } else {
+      setShowCategories(true);
+    }
   };
 
   return (
@@ -94,7 +104,7 @@ const Homepage = () => {
           showCategories ? 'max-h-screen opacity-100' : 'max-h-0 opacity-0'
         }`}
       >
-        <div className="container mx-auto p-2 mt-8">
+        <div className="container mx-auto p-2 mt-8 relative pb-16"> {/* Added padding-bottom */}
           <h2 className="text-2xl font-bold text-blue-900 mb-6">Choose device</h2>
           {!selectedDevice && (
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
@@ -114,25 +124,52 @@ const Homepage = () => {
           )}
 
           {selectedDevice && !selectedBrand && (
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4">
               {brands.map((brand) => (
                 <div
                   key={brand.name}
-                  className="p-8 border shadow-md hover:shadow-lg transition-all cursor-pointer"
+                  className="p-6 border shadow-md hover:shadow-lg transition-all cursor-pointer flex flex-col items-center justify-center"
                   onClick={() => handleBrandChange(brand)}
                 >
                   {brand.logo ? (
-                    <img src={brand.logo} alt={brand.name} className="h-32 w-32 object-contain" />
+                    <img src={brand.logo} alt={brand.name} className="h-20 w-20 object-contain" />
                   ) : (
-                    <div className="text-lg font-medium">Other</div>
+                    <div className="text-lg font-medium text-center">Other</div>
                   )}
-                  <div className="mt-2 text-center">{brand.name}</div>
+                  <div className="mt-2 text-center text-sm">{brand.name}</div>
                 </div>
               ))}
             </div>
           )}
+
+          {selectedDevice && selectedBrand && (
+            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4">
+             
+            </div>
+          )}
+
+
+          {selectedDevice && (
+            <button
+              className="absolute bg-blue-600 text-white py-2 px-4 shadow-lg hover:bg-blue-700"
+              style={{
+                right: '1rem', // Align to the right of the container
+                bottom: '1rem', // Ensure the button is below the boxes
+              }}
+              onClick={() => {
+                if (selectedBrand) {
+                  handleGoBackToBrand(); // Go back to device selection
+                } else if (selectedDevice) {
+                  handleGoBackToDevice(); // Go back to category selection
+                }
+              }}
+            >
+              Back
+            </button>
+          )}
         </div>
       </div>
+
 
       {/* Live Support Section */}
       <div

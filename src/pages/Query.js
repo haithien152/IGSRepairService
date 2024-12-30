@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 const QueryPage = () => {
   const navigate = useNavigate();
   const { user, isLoggedIn } = useLogin();
-  const [email, setEmail] = useState(isLoggedIn ? user.email : '');
+  const [email, setEmail] = useState(isLoggedIn && user ? user.email : '');
   const [question, setQuestion] = useState('');
   const [file, setFile] = useState(null);
 
@@ -32,6 +32,7 @@ const QueryPage = () => {
             If you'd rather not wait, please message us through the chat box at the bottom right.
           </p>
           <form onSubmit={handleSubmit}>
+            {/* Email Field */}
             <div className="mb-4">
               <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>
               <input
@@ -39,11 +40,13 @@ const QueryPage = () => {
                 id="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full p-3 border border-gray-300"
+                className={`w-full p-3 border ${isLoggedIn ? 'bg-gray-200 cursor-not-allowed' : 'border-gray-300'}`}
                 required
                 disabled={isLoggedIn} // Disable email input if logged in
               />
             </div>
+
+            {/* Question Field */}
             <div className="mb-4">
               <label htmlFor="question" className="block text-sm font-medium text-gray-700">Your Question</label>
               <textarea
@@ -56,6 +59,8 @@ const QueryPage = () => {
                 required
               ></textarea>
             </div>
+
+            {/* File Upload Field */}
             <div className="mb-6">
               <label htmlFor="file" className="block text-sm font-medium text-gray-700">Attach Files</label>
               <input
@@ -65,6 +70,8 @@ const QueryPage = () => {
                 className="w-full p-3 border border-gray-300"
               />
             </div>
+
+            {/* Buttons */}
             <button type="submit" className="w-full bg-blue-800 text-white py-3 hover:bg-blue-700">
               Submit Query
             </button>

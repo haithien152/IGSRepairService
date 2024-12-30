@@ -8,22 +8,24 @@ import Login from './pages/Login';
 import Signup from './pages/Signup';
 import QueryPage from './pages/Query';
 import Homepage from './pages/Homepage'; // Import the Homepage component
+import VerifyPage from './pages/VerifyPage'; // Import the VerifyPage component
+import BoxChat from './components/Boxchat';
 import { LoginProvider, useLogin } from './contexts/LoginContext'; // Import LoginContext
 
 function App() {
   return (
-    <LoginProvider> {/* Wrap the app with LoginProvider */}
+    <LoginProvider>
       <Router>
-        <Navbar /> {/* Navbar will consume login context */}
-        <ScrollLock /> {/* Component to lock scroll on specific routes */}
+        <Navbar />
+        <ScrollLock />
+        <BoxChat />
         <Routes>
-          <Route path="/" element={<Homepage />} /> {/* Set Homepage as default */}
+          <Route path="/" element={<Homepage />} />
           <Route path="/workorders" element={<WorkOrders />} />
           <Route path="/tickets" element={<Tickets />} />
           <Route path="/invoices" element={<Invoices />} />
           <Route path="/query" element={<QueryPage />} />
-          
-          {/* Redirect to dashboard if user is already logged in */}
+          <Route path="/verify/:id" element={<VerifyPage />} />
           <Route path="/login" element={<RedirectIfLoggedIn><Login /></RedirectIfLoggedIn>} />
           <Route path="/signup" element={<RedirectIfLoggedIn><Signup /></RedirectIfLoggedIn>} />
         </Routes>
@@ -32,10 +34,11 @@ function App() {
   );
 }
 
+
 // A wrapper component to redirect logged-in users
 const RedirectIfLoggedIn = ({ children }) => {
   const { isLoggedIn } = useLogin();
-  
+
   if (isLoggedIn) {
     return <Navigate to="/" />;
   }

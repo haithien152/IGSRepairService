@@ -32,7 +32,7 @@ const Signup = () => {
     }
 
     try {
-      const response = await fetch('http://127.0.0.1:5000/signup', {
+      const response = await fetch('http://127.0.0.1:5000/user/signup', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -42,8 +42,8 @@ const Signup = () => {
 
       const data = await response.json();
 
-      if (data.message === `User ${username} signed up successfully!`) {
-        alert('Sign up successfully! Please log in.');
+      if (response.ok && data.message.includes('Signup successful')) {
+        alert('Sign up successful! Please log in.');
         navigate('/login');
       } else {
         setErrorMessage(data.message || 'An error occurred while signing up');
